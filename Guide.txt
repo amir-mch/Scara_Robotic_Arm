@@ -1,0 +1,11 @@
+#Terminal 1 :
+cd ~/Desktop/Project/Scara-v2.1.0.0/SCARA_WorkSpace
+./launch_agent.sh
+
+#Terminal 2:
+cd ~/Desktop/Project/Scara-v2.1.0.0/SCARA_WorkSpace
+./launch_gui.sh
+
+#Terminal 3 :
+cd ~/Desktop/Project/Scara-v2.1.0.0/SCARA_WorkSpace
+./launch_bridge.sh

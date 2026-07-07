@@ -1,0 +1,26 @@
+# Colcon & ROS2 Build Directories
+build/
+install/
+log/
+.colcon/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local backup ZIPs
+*.zip
+*.tar.gz
+
+# IDE and Editor configs
+.vscode/
+.idea/
+.project
+.pydevproject
+.settings/
+*.swp
+*.swo
+*~
