@@ -299,9 +299,9 @@ class JointSpacePanel(QGroupBox):
             """)
             row.addWidget(slider)
             
-            # Sync slider and entry box
-            slider.valueChanged.connect(lambda v, e=entry: e.setText(str(v)))
-            entry.textChanged.connect(lambda txt, s=slider, l=lo, h=hi: self._sync_slider(txt, s, l, h))
+            # Sync slider and entry box cleanly without signal loops
+            slider.valueChanged.connect(lambda v, e=entry: (e.blockSignals(True), e.setText(str(v)), e.blockSignals(False)))
+            entry.editingFinished.connect(lambda s=slider, e=entry, l=lo, h=hi: self._sync_slider(e.text(), s, l, h))
             
             layout.addLayout(row)
             self.target_entries[key] = (entry, slider, None)
@@ -422,9 +422,9 @@ class CartesianIKPanel(QGroupBox):
             """)
             row.addWidget(slider)
             
-            # Sync slider and entry box
-            slider.valueChanged.connect(lambda v, e=entry: e.setText(str(val:=float(v))))
-            entry.textChanged.connect(lambda txt, s=slider, l=lo, h=hi: self._sync_slider(txt, s, l, h))
+            # Sync slider and entry box cleanly without signal loops
+            slider.valueChanged.connect(lambda v, e=entry: (e.blockSignals(True), e.setText(f"{float(v):.1f}"), e.blockSignals(False)))
+            entry.editingFinished.connect(lambda s=slider, e=entry, l=lo, h=hi: self._sync_slider(e.text(), s, l, h))
             
             layout.addLayout(row)
             self.cart_entries[key] = (entry, slider, None)
@@ -487,10 +487,10 @@ class CartesianIKPanel(QGroupBox):
                 slider.setValue(val)
                 slider.blockSignals(False)
                 # Update arm simulator target point dynamically
-                if self.cart_entries['X_mm'][0] is not None:
+                if 'X_mm' in self.cart_entries and self.cart_entries['X_mm'][0] is not None:
                     try:
-                        x = float(self.cart_entries['X_mm'][0].get() if hasattr(self.cart_entries['X_mm'][0], 'get') else self.cart_entries['X_mm'][0].text())
-                        y = float(self.cart_entries['Y_mm'][0].get() if hasattr(self.cart_entries['Y_mm'][0], 'get') else self.cart_entries['Y_mm'][0].text())
+                        x = float(self.cart_entries['X_mm'][0].text())
+                        y = float(self.cart_entries['Y_mm'][0].text())
                         self.app.visualizer.set_target_cartesian(x, y)
                     except Exception:
                         pass
@@ -637,7 +637,8 @@ class MotorConfigPanel(QGroupBox):
             """)
             row.addWidget(slider)
             
-            slider.valueChanged.connect(lambda v, e=entry: e.setText(str(v)))
+            slider.valueChanged.connect(lambda v, e=entry: (e.blockSignals(True), e.setText(str(v)), e.blockSignals(False)))
+            entry.editingFinished.connect(lambda s=slider, e=entry, l=lo, h=hi: self._sync_slider(e.text(), s, l, h))
             
             layout.addLayout(row)
             self.cfg_vars[name] = (entry, slider, None)

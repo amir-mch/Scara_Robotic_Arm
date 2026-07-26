@@ -175,6 +175,11 @@ class ScaraApp(QMainWindow):
         self.lbl_conn.setStyleSheet(f"color: {self.RED}; margin-right: 15px;")
         header.addWidget(self.lbl_conn)
 
+        self.lbl_robot_status = QLabel("● Status: IDLE")
+        self.lbl_robot_status.setFont(QFont("Segoe UI", 10, QFont.Bold))
+        self.lbl_robot_status.setStyleSheet(f"color: {self.GREEN}; margin-right: 15px;")
+        header.addWidget(self.lbl_robot_status)
+
         main_layout.addLayout(header)
 
         # ── 3-COLUMN CONTENT PANEL ──
@@ -302,7 +307,7 @@ class ScaraApp(QMainWindow):
             L2 = float(self.cartesian_panel.cart_entries['L2_mm'][0].text())
             off1 = float(self.cartesian_panel.cart_entries['Off1_deg'][0].text())
             off2 = float(self.cartesian_panel.cart_entries['Off2_deg'][0].text())
-            elbow_up = bool(self.cartesian_panel.elbow_up_var.checkedId())
+            elbow_up = self.cartesian_panel.btn_up.isChecked()
             
             # Solve Inverse Kinematics analytically
             th1_deg, th2_deg = calculate_inverse_kinematics(x_cart, y_cart, L1, L2, elbow_up)
@@ -530,7 +535,8 @@ class ScaraApp(QMainWindow):
         # Update Status label
         st = state['status']
         color_map = {'IDLE': self.GREEN, 'MOVING': self.YELLOW, 'HOMING': self.ORANGE}
-        self.lbl_conn.parent().findChild(QLabel).setStyleSheet(f"color: {color_map.get(st, self.RED)};") # Dynamic style
+        self.lbl_robot_status.setText(f"● Status: {st}")
+        self.lbl_robot_status.setStyleSheet(f"color: {color_map.get(st, self.RED)}; margin-right: 15px;")
 
         cp = state['current_pos']
         tp = state['target_pos']
