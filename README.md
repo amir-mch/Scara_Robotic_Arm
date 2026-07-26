@@ -19,14 +19,14 @@ A complete, high-performance control and simulation ecosystem for a 3-Axis SCARA
 
 ```mermaid
 graph TD
-    subgraph PC (Host Machine)
+    subgraph PC["PC (Host Machine)"]
         A[PyQt5 GUI Control Center] <-->|QTimer Polling 30Hz| B[Thread-Safe State Manager]
         A -->|Keyboard Jog / IK Commands| C[Velocity Stream Worker]
         C -->|geometry_msgs/Point| D[ROS 2 Jazzy Node]
         D <-->|micro-ROS Transport| E[micro-ROS Serial Agent]
     end
-    subgraph Microcontroller
-        E <-->|USB Serial | F[ESP32 micro-ROS Subscriber/Publisher]
+    subgraph MCU["Microcontroller"]
+        E <-->|USB Serial| F[ESP32 micro-ROS Subscriber/Publisher]
         F -->|State Update Commands| G[Motion Control Task]
         G -->|Direct Speed Overrides| H[Stepper Timer Interrupt ISR (Core 0)]
         H -->|PWM Step/Dir pulses| I[Shoulder / Elbow / Z-Axis Steppers]
